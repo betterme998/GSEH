@@ -1,13 +1,15 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><template #center><p>购物车</p></template></nav-bar>
-    <home-swiper :banners="banners"/>
-    <home-recommend-view :recommends="recommends"/>
-    <feature-view/>
-    <tab-control class="tab-control" 
-                :titles="['流行', '新款', '精选']"
-                @tabClick="tabClick"/>
-    <goods-list :goods="showGoods"/>
+    <scroll :data="$data" class="wrapper" ref="scroll">
+      <home-swiper :banners="banners"/>
+      <home-recommend-view :recommends="recommends"/>
+      <feature-view @imgload2="imgload2"/>
+      <tab-control class="tab-control" 
+                  :titles="['流行', '新款', '精选']"
+                  @tabClick="tabClick"/>
+      <goods-list @imgload="imgload" :goods="showGoods"/>
+    </scroll>
 
     <ul>
       <li>12888888888</li>
@@ -116,6 +118,7 @@ import FeatureView from "./childComps/FeatureView.vue"
 import NavBar from 'components/common/navbar/NavBar.vue'
 import TabControl from "components/content/TabControl/TabControl.vue"
 import GoodsList from "components/content/goods/GoodsList.vue"
+import Scroll from "components/common/scroll/Scroll.vue"
 
 
 // 没有用default导出，所以要大括号,导入数据请求
@@ -144,7 +147,8 @@ export default {
     NavBar,
     TabControl,
     GoodsList,
-    GoodsList
+    GoodsList,
+    Scroll
   },
   computed: {
     showGoods() {
@@ -156,12 +160,20 @@ export default {
         // 这意味这create只写网络请求代码，里面具体请求代码，我们放到methods里面，
 
     // 1请求多个数据,并保存下来,
-    this.getHomeMultidata()
+    
+    this.$nextTick(()=>{
+      this.getHomeMultidata()
+    })
 
     // 首先请求三类商品第一页数据,并保存下来保存到goods中
-    this.getHomeGoods('pop')
-    this.getHomeGoods('new')
-    this.getHomeGoods('sell')
+    // this.getHomeGoods('pop')
+    // this.getHomeGoods('new')
+    // this.getHomeGoods('sell')
+    this.$nextTick(()=>{
+      this.getHomeGoods('pop')
+      this.getHomeGoods('new')
+      this.getHomeGoods('sell')
+    })
   },
   methods: {
     // 事件监听方法
@@ -178,6 +190,16 @@ export default {
           break
       }
     },
+    imgload(){
+      setTimeout(() => {
+        this.$refs.scroll.refresh()
+      }, 150);
+    },
+    imgload2(){
+      setTimeout(() => {
+        this.$refs.scroll.refresh()
+      }, 150);
+    },
 
     // 网络请求相关代码下面
     getHomeMultidata(){
@@ -185,6 +207,9 @@ export default {
         this.banners = res.data.banner.list;
         this.recommends = res.data.recommend.list;
         // console.log(this.recommends);
+        setTimeout(() => {
+        this.$refs.scroll.refresh()
+      }, 150);
       })
     },
     getHomeGoods(type) {
@@ -196,6 +221,12 @@ export default {
         this.goods[type].list.push(...res.data.list)
         // 当数据添加进去后，page要加1
         this.goods[type].page += 1
+        // this.$nextTick(()=>{
+        //   this.$refs.scroll.refresh()
+        // })
+        setTimeout(() => {
+        this.$refs.scroll.refresh()
+      }, 150);
         console.log(res);
         // console.log(11)
       })    
@@ -205,7 +236,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   #home{
     padding-top: 13.75vw;
   }
@@ -219,6 +250,10 @@ export default {
     right: 0;
     top: 0;
     z-index: 9;
+  }
+  .wrapper{
+    height: 83.6267605vh;
+    overflow: hidden;
   }
   .tab-control{
     position: sticky;

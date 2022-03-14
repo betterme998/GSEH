@@ -1,7 +1,7 @@
 <template>
 <div class="goods-box">
   <div class="goods">
-    <goods-list-item v-for="item in goods" :key="item.iid" :goods-item="item"/>
+    <goods-list-item @imgload="imgload" v-for="item in goods" :key="item.iid" :goods-item="item"/>
   </div>
 </div>
 </template>
@@ -21,6 +21,12 @@ export default {
   },
   components: {
     GoodsListItem
+  },
+  methods:{
+    imgload(){
+      console.log(12);
+      this.$emit('imgload')
+    }
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="goods-item">
-    <img :src="goodsItem.show.img" alt="">
+    <img :src="goodsItem.show.img" @load="imgg" alt="">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <!-- <span class="iconfont "></span> -->
@@ -19,6 +19,11 @@ export default {
       default() {
         return {}
       }
+    }
+  },
+  methods:{
+    imgg(){
+      this.$emit('imgload')
     }
   }
 }
