@@ -1,8 +1,8 @@
 <template>
-  <swiper>
+  <swiper ref="swiper">
     <swiper-item  v-for="item in banners" :key="item.title" class="swiper-item">
       <a :href="item.link">
-        <img class="imgs" :src="item.image" alt="">
+        <img @load="imgload" class="imgs" :src="item.image" alt="">
       </a>
     </swiper-item>
   </swiper>
@@ -13,6 +13,10 @@
 import {Swiper, SwiperItem} from 'components/common/swiper'
 export default {
   name: "HomeSwiper",
+  data(){
+    return{
+    }
+  },
   props: {
     banners:{
       type:Array,
@@ -21,10 +25,24 @@ export default {
       }
     }
   },
+  data(){
+    return {
+      isLoad: false
+    }
+  },
   components: {
     Swiper,
     SwiperItem
-  } 
+  } ,
+  methods:{
+    imgload() {
+      if(!this.isLoad){
+          this.$emit('imgload3')
+          this.$refs.swiper.handleDom();
+          this.isLoad = true
+      }
+    }
+  }
 }
 </script>
 

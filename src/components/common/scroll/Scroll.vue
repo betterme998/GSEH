@@ -16,7 +16,7 @@ export default {
   name: 'Scroll',
   data() {
     return{
-      bscroll:null
+      scroll:null
     }
   },
   props:{
@@ -25,6 +25,14 @@ export default {
       default() {
         return null
       }
+    },
+    probeType:{
+      type:Number,
+      default:0
+    },
+    pullUpLoad:{
+      type:Boolean,
+      default:false
     }
   },
   // 等·挂载后它就行了， 忘了看官网
@@ -33,7 +41,19 @@ export default {
     // this.scroll.refresh()
       setTimeout(() => {
         this.initBscroll()
+        // 监听滚动的位置
+        this.scroll.on('scroll', (position) => {
+        this.$emit("scroll", position)
+      })
+        // 3.监听上拉事件
+        this.scroll.on('pullingUp', ()=>{
+          // this.$emit('')
+          this.$emit('pullingUp')
+        })
       }, 20);
+
+      
+      
     // refresh()
   },
   methods: {
@@ -44,8 +64,8 @@ export default {
       }
       // better-scroll初始化
       this.scroll = new BScroll(this.$refs.scroll_wrapper, {
-          pullUpLoad: true,
-          probeType:3,
+          pullUpLoad: this.pullUpLoad,
+          probeType:this.probeType,
           click:true,
           observeDOM:true
       })
@@ -56,11 +76,12 @@ export default {
     //   })
 
       // 监听滚动
-      // this.bscroll.on('scroll', (position)=>{
-      //   console.log(position);
+      // this.scroll.on('scroll', (position)=>{
+      //   // console.log(position);
+      //   // this.$emit('scrollY',position)
       // })
       // 监听上拉加载 ,这只执行一次.所以等数据加载好渲染完成后执行this.bscroll.finishPullUp();让上拉加载再次执行
-      // this.bscroll.on('pullingUp', ()=>{
+      // this.scroll.on('pullingUp', ()=>{
       //   console.log('上拉加载');
       //   setTimeout(() => {
       //   this.bscroll.finishPullUp();
@@ -78,6 +99,18 @@ export default {
     disable(){
       // 禁用refresh
       this.scroll && this.scroll.disable()
+    },
+    // 返回顶部
+    scrollTo(x,y,h){
+      this.scroll && this.scroll.scrollTo(x,y,h)
+    },
+    // 每次调用后恢复上拉函数
+    finishPullUp(){
+      this.scroll.finishPullUp()
+    },
+    // 获取goods单个内容高度
+    getScrollY() {
+      return this.scroll() ? this.scroll.y : 0
     }
     
     

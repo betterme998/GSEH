@@ -24,7 +24,7 @@ export default {
   },
   methods:{
     imgload(){
-      console.log(12);
+      // console.log(12);
       this.$emit('imgload')
     }
   }
@@ -36,11 +36,15 @@ export default {
   display: flex;
   justify-content: center;
   background-color: #EFEFED;
-  border-radius: 3.5vw;
+  border-radius: 3.5vw 3.5vw 0 0;
   padding:1.3vw 0;
 }
 .goods{
-   column-count: 2;
-   column-gap: 1.875vw;
+   /* column-count: 2;
+   column-gap: 1.875vw; */
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: space-around;
+   padding: .9375vw;
 }
 </style>
