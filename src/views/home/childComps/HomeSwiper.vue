@@ -38,6 +38,7 @@ export default {
     imgload() {
       if(!this.isLoad){
           this.$emit('imgload3')
+          // 当图片加载时再去获取轮播图的图片个数
           this.$refs.swiper.handleDom();
           this.isLoad = true
       }

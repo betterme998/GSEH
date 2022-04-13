@@ -22,7 +22,7 @@
       <tab-control :titles="['流行', '新款', '精选']"
                   ref="tabControl2"
                   @tabClick="tabClick"/>
-      <goods-list @imgload="imgload" :goods="showGoods"/>
+      <goods-list @homeimgload="imgload" :goods="showGoods"/>
     </scroll>
     <!-- 给组件添加点击 要加上原始的修饰符native -->
     <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
@@ -122,6 +122,9 @@ export default {
   activated() {
     this.$refs.scroll.refresh()
   },
+  deactivated() {
+    
+  },
   methods: {
     // 事件监听相关方法方法
 
@@ -133,7 +136,7 @@ export default {
         case 0:
           this.currentType = "pop"
           if(-this.clickItemtop < this.tabOffsetTop){
-            this.$refs.scroll.scrollTo(0,-this.tabOffsetTop,800)
+            this.$refs.scroll.scrollTo(0,-this.tabOffsetTop,0)
           }else{
             this.$refs.scroll.scrollTo(0,this.clickItemtop,0)
           }
@@ -141,7 +144,7 @@ export default {
         case 1:
           this.currentType = 'new'
           if(-this.clickItemtop2 < this.tabOffsetTop){
-            this.$refs.scroll.scrollTo(0,-this.tabOffsetTop,800)
+            this.$refs.scroll.scrollTo(0,-this.tabOffsetTop,0)
           }else{
             this.$refs.scroll.scrollTo(0,this.clickItemtop2,0)
           }
@@ -149,7 +152,7 @@ export default {
         case 2:
           this.currentType = 'sell'
           if(-this.clickItemtop3 < this.tabOffsetTop){
-            this.$refs.scroll.scrollTo(0,-this.tabOffsetTop,800)
+            this.$refs.scroll.scrollTo(0,-this.tabOffsetTop,0)
           }else{
             this.$refs.scroll.scrollTo(0,this.clickItemtop3,0)
           }
@@ -165,9 +168,6 @@ export default {
       // this.refresh()
       const refresh = debounce(this.$refs.scroll.refresh,10)
       refresh()
-      // setTimeout(() => {
-      //   this.$refs.scroll.refresh()
-      // }, 150);
     },
     imgload2(){
       this.imgload()
@@ -253,9 +253,12 @@ export default {
       // 首先把流行，新品，精选的第一页数据请求下来，其他的等上拉加载只请求
       getHomeGoods(type, page).then(res =>{
         // 拿到数据后保存，不然会销毁,因为要保存很多次的数据首页用push（...）
-        this.goods[type].list.push(...res.data.list)
+        if(res.data.list.length !==0){
+          this.goods[type].list.push(...res.data.list)
         // 当数据添加进去后，page要加1
         this.goods[type].page += 1
+        }
+        
         // this.$nextTick(()=>{
         //   this.$refs.scroll.refresh()
         // })

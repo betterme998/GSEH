@@ -1,6 +1,7 @@
 <template>
   <div class="goods-item" @click="itemClick">
-    <img :src="goodsItem.show.img" @load="imgg" alt="">
+    <!-- 不同数据可能路径不同 所以使用计算属性 判断 -->
+    <img :src="showImage" @load="imgg" alt="">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <!-- <span class="iconfont "></span> -->
@@ -28,6 +29,12 @@ export default {
     itemClick() {
       // 跳转详情页，因为要返回所以用push()
       this.$router.push('/detail/' + this.goodsItem.iid)
+    }
+  },
+  computed: {
+    showImage() {
+      // 如果取不到image就
+      return this.goodsItem.image || this.goodsItem.show.img
     }
   }
 }

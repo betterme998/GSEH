@@ -35,6 +35,7 @@ export default {
   methods:{
     DatailImageLoad() {
       if(this.ImageLoad === false){
+         // 当图片加载时再去获取轮播图的图片个数
         this.$refs.swiper.handleDom()
         this.$emit('imageLoad')
       }

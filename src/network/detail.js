@@ -21,6 +21,7 @@ export class GoodsInfo {
   }
 }
 
+
 export class Shop {
   constructor(shopInfo) {
     this.logo = shopInfo.shopLogo;
@@ -30,4 +31,20 @@ export class Shop {
     this.score = shopInfo.score
     this.goodsCount = shopInfo.cGoods
   }
+}
+
+//商品参数信息
+export class GoodsParam {
+  constructor(info, rule) {
+    this.image = info.image ? info.images[0] : '';
+    this.infos = info.set;
+    this.size = rule.tables;
+  }
+}
+
+// 商品推荐信息
+export function getRecommend() {
+  return request({
+    url:'/recommend'
+  })
 }

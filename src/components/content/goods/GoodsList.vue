@@ -24,8 +24,11 @@ export default {
   },
   methods:{
     imgload(){
-      // console.log(12);
-      this.$emit('imgload')
+     if(this.$route.path.indexOf('/home')){
+       this.$emit('detailimgload')
+      }else if(this.$route.path.indexOf('/detail')) {
+        this.$emit('homeimgload')
+      }
     }
   }
 }
