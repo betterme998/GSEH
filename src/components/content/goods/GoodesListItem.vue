@@ -22,9 +22,16 @@ export default {
       }
     }
   },
+  beforeUnmount() {
+    this.imgg = null;
+  },
   methods:{
     imgg(){
-      this.$emit('imgload')
+      if(this.$route.path.indexOf('/home')) {
+        this.$emit('detailimgload')
+      }else if(this.$route.path.indexOf('/detail')){
+        this.$emit('homeimgload')
+      }
     },
     itemClick() {
       // 跳转详情页，因为要返回所以用push()

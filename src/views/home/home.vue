@@ -39,7 +39,9 @@ import NavBar from 'components/common/navbar/NavBar.vue'
 import TabControl from "components/content/TabControl/TabControl.vue"
 import GoodsList from "components/content/goods/GoodsList.vue"
 import Scroll from "components/common/scroll/Scroll.vue"
-import BackTop from "components/content/backTop/BackTop.vue"
+
+// 导入混入
+import {backTopMixin} from 'common/mixin'
 
 
 // 没有用default导出，所以要大括号,导入数据请求
@@ -60,7 +62,6 @@ export default {
         'sell': {page: 0, list: []}
       },
       currentType:'pop',
-      isShowBackTop:false,
       navAanTabHeight:0,
       tabOffsetTop:0,
       homenavTop:0,
@@ -71,6 +72,7 @@ export default {
       clickItemtop3:0
     }
   },
+  mixins:[backTopMixin],
   components: {
     HomeSwiper,
     HomeRecommendView,
@@ -79,8 +81,7 @@ export default {
     TabControl,
     GoodsList,
     GoodsList,
-    Scroll,
-    BackTop
+    Scroll
   },
   computed: {
     showGoods() {
@@ -180,15 +181,11 @@ export default {
 
       // console.log(this.navAanTabHeight);
     },
-    // 回到顶部
-    // 修饰符.native修饰符什么时候使用？ 在我们需要监听一个组件的原生事件时，必须给对应的事件加上.native修饰符，才能进行监听
-    backClick(){
-      this.$refs.scroll.scrollTo(0,0,500)
-    },
+   
     // 监听滑动显示隐藏backTop按钮
     cotentScroll(position){
-      // 1.判断Backtop是否显示
-      this.isShowBackTop = (-position.y) > 1000
+      // 1.判断Backtop是否显示,用到混入
+      this.listanShoBackTop(position)
 
       // 2.决定tabControl是否吸顶
       this.isTabFixed = (-position.y) > this.tabOffsetTop
@@ -282,7 +279,7 @@ export default {
   .home-nav {
     background-color: var(--color-tint);
     color: #fff;
-    
+    font-size: 5vw;
     /* 固定navbar */
     /* position: fixed;
     left: 0;

@@ -1,7 +1,7 @@
 <template>
 <div class="goods-box">
   <div class="goods">
-    <goods-list-item @imgload="imgload" v-for="item in goods" :key="item.iid" :goods-item="item"/>
+    <goods-list-item @homeimgload="imgload" @detailimgload="detailimgload" v-for="item in goods" :key="item.iid" :goods-item="item"/>
   </div>
 </div>
 </template>
@@ -23,12 +23,20 @@ export default {
     GoodsListItem
   },
   methods:{
+    // imgload(){
+    //  if(this.$route.path.indexOf('/home')){
+    //    this.$emit('detailimgload')
+    //    console.log(this.$route.path);
+    //   }else if(this.$route.path.indexOf('/detail')) {
+    //     this.$emit('homeimgload')
+    //   }
+    // }
     imgload(){
-     if(this.$route.path.indexOf('/home')){
-       this.$emit('detailimgload')
-      }else if(this.$route.path.indexOf('/detail')) {
-        this.$emit('homeimgload')
-      }
+       this.$emit('homeimgload')
+       
+    },
+    detailimgload(){
+      this.$emit('detailimgload')
     }
   }
 }

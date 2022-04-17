@@ -14,6 +14,9 @@
       <detail-comment-info ref="comment" :comment-info="commentInfo"/>
       <goods-list ref="recommend" :goods="recommends" @detailimgload="goodsimgload"/>
     </scroll>
+    <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
+    <detail-bottom-bar @addCart="addToCart"/>
+    <toast :show="show" :massage="massage"/>
   </div>
 </template>
 
@@ -26,14 +29,16 @@ import DetailGoodsInfo from './childComps/DetailGoodsInfo.vue'
 import DetailParamInfo from './childComps/DetailParamInfo.vue'
 import DetailCommentInfo from './childComps/DetailCommentInfo.vue'
 import GoodsList from 'components/content/goods/GoodsList.vue'
-import { onUpdated } from 'vue'
+import DetailBottomBar from './childComps/DetailBottomBar.vue'
 // 混入练习 1.导入
-import {itemListenerMoxin} from 'common/mixin'
+import {itemListenerMoxin,backTopMixin} from 'common/mixin'
 
 import Scroll from 'components/common/scroll/Scroll.vue'
 
 import {getDetail, GoodsInfo, Shop, GoodsParam, getRecommend} from "network/detail"
 import {debounce} from "common/utils"
+
+import Toast from "components/common/toast/Toast.vue"
 export default {
   name:'Detail',
   data(){
@@ -49,11 +54,13 @@ export default {
       commentInfo:{},
       recommends: [],
       themeTopYs:[],
-      currentIndex:0
+      currentIndex:0,
+      show:false,
+      massage:''
     }
   },
   // 练习混入 2.导入  这就被导入到mounted中了
-  mixins: [itemListenerMoxin],
+  mixins: [itemListenerMoxin,backTopMixin],
   components: {
     DetailNavBar,
     DetailSwiper,
@@ -63,7 +70,9 @@ export default {
     Scroll,
     DetailParamInfo,
     DetailCommentInfo,
-    GoodsList
+    GoodsList,
+    DetailBottomBar,
+    Toast,
   },
   created() {
     // 1.保存传入的iid
@@ -105,12 +114,11 @@ export default {
   mounted() {
     this.detailnavbarr = this.$refs.detailnavbat.$el.offsetHeight;
   },
-  updated() {
-    // 当拿到数据后会执行updated方法，对界面进行更新，updated里面保证是有值的
-
-    
+  beforeUnmount() {
+    this.imageLoad = null;
+    this.imgLoad = null
+    this.goodsimgload = null
   },
-
   methods:{
     imageLoad(){
       const refresh = debounce(this.$refs.scroll.refresh,10)
@@ -128,7 +136,6 @@ export default {
         this.themeTopYs.push(this.$refs.params.$el.offsetTop); //参数的offsetTop
         this.themeTopYs.push(this.$refs.comment.$el.offsetTop); //评论的offsetTop
         this.themeTopYs.push(this.$refs.recommend.$el.offsetTop+this.detailnavbarr); //推荐的offsetTop
-        console.log(this.themeTopYs);
     },
     goodsimgload() {
       const refresh = debounce(this.$refs.scroll.refresh,10)
@@ -145,7 +152,6 @@ export default {
         this.themeTopYs.push(this.$refs.comment.$el.offsetTop); //评论的offsetTop
         this.themeTopYs.push(this.$refs.recommend.$el.offsetTop); //推荐的offsetTop
         this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 100)
-        console.log("dian");
     },
     contentScroll(position) {
       // 监听滚动 改变navbar样式
@@ -159,10 +165,15 @@ export default {
       // positionY 在 9120 和 9452之间， index = 2
       // positionY 在 9120 之后， index = 3
       let length = this.themeTopYs.length
+      // 以空间换时间
+      // 下面的判断复制，可以在positionY后面加入一个最大值Number.MAX_VALUE ,不循环最后一项。 
+      // for(let i = 0; i < length-1; i++){
+      //   if((positionY > this.themeTopYs[i]) && (positionY <this.themeTopYs[i+1])) {
+      //     this.currentIndex = i;
+      //     this.$refs.detailnavbat.currentIndex = this.currentIndex
+      //   }
+      // }
       for(let i = 0; i < length; i++){
-        // if ((positionY > this.themeTopYs[i]) && (positionY <this.themeTopYs[i+1])) {
-        //   console.log(i+1);
-        // }
         // 因为监听滚动比较频繁，所有在判断它处于那个位置之前，先判断他们是否一致，不一致再判断。
         if(this.currentIndex !== i &&(((i < length -1) && ((positionY >= this.themeTopYs[i]) && (positionY <this.themeTopYs[i+1]))) || ((i === length -1) && (positionY > this.themeTopYs[i])))) {
           // 用来记录当前位置
@@ -171,6 +182,30 @@ export default {
           this.$refs.detailnavbat.currentIndex = this.currentIndex
         }
       }
+
+      // 1.判断Backtop是否显示,用到混入
+      this.listanShoBackTop(position)
+    },
+    addToCart() {
+      // 1.获取购物车需要展示的信息
+      const product = {}
+      product.image = this.topImages[0]; //图片
+      product.title = this.goods.title; //标题
+      product.desc = this.goods.desc; //描述
+      product.price = this.goods.realPrice; //价格
+      product.iid = this.iid; //商品唯一标识
+
+      // 将商品添加到购物车里
+      // this.$store.commit('addCart', product)
+      this.$store.dispatch('addCart',product).then(res => {
+        this.show = true;
+        this.massage = res;
+        setTimeout(() => {
+          this.show = false
+        },1500)
+      }) //因为有多种情况 所以用action
+
+      // 3.添加到购物车成功
     }
   }
 }
@@ -182,9 +217,10 @@ export default {
     z-index: 9;
     background-color: #fff;
     height: 100vh;
+    overflow: hidden;
   }
   .content2{
-    height: 92.253521126vh;
+    height: 83.62676056388vh;
     overflow: hidden;
   }
 </style>

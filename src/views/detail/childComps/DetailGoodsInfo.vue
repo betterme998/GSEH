@@ -37,10 +37,14 @@ export default {
       }
     }
   },
+  beforeUnmount() {
+    this.imgLoad = null
+  },
   methods: {
     imgLoad() {
-      if (++this.count === this.imagesLength) {
+      if ((++this.count === this.imagesLength) && (this.$route.path.indexOf('/home'))) {
         this.$emit("imgLoad");
+        console.log('详情页');
       }
     }
   },

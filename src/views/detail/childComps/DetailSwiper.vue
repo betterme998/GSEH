@@ -28,13 +28,12 @@ export default {
       }
     }
   },
-  mounted(){
-    
-    // this.$refs.swiper.startTimer();
+  beforeUnmount() {
+    this.DatailImageLoad = null;
   },
   methods:{
     DatailImageLoad() {
-      if(this.ImageLoad === false){
+      if((this.ImageLoad === false) &&(this.$route.path.indexOf('/home'))){
          // 当图片加载时再去获取轮播图的图片个数
         this.$refs.swiper.handleDom()
         this.$emit('imageLoad')
