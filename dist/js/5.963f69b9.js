@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunk_0supermall"]=self["webpackChunk_0supermall"]||[]).push([[5],{7005:function(e,n,r){r.r(n),r.d(n,{default:function(){return c}});var u=r(6252);function l(e,n,r,l,a,t){return(0,u.wg)(),(0,u.iD)("h2",null,"个人")}var a={name:"profile"},t=r(3744);const s=(0,t.Z)(a,[["render",l]]);var c=s}}]);
+//# sourceMappingURL=5.963f69b9.js.map

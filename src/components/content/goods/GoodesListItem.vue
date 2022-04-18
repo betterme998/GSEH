@@ -1,7 +1,7 @@
 <template>
   <div class="goods-item" @click="itemClick">
     <!-- 不同数据可能路径不同 所以使用计算属性 判断 -->
-    <img :src="showImage" @load="imgg" alt="">
+    <img v-lazy="showImage" @load="imgg" alt="">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <!-- <span class="iconfont "></span> -->
