@@ -27,10 +27,8 @@ export default {
     Scroll,
     CartListItem
   },
-  activated(){
-    this.$refs.scroll.refresh()
-  },
   activated() {
+    this.$refs.scroll.refresh()
     for(let i =0; i<this.cartList.length;i++){
       this.cartList[i].buttonshow = false
     }

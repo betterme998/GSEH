@@ -20,5 +20,7 @@ module.exports={
         })
     
     },
-    lintOnSave:false
+    lintOnSave:false,
+    publicPath:'./',
+    outputDir: 'dist'
 }

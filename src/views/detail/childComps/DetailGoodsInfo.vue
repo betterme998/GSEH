@@ -9,11 +9,11 @@
       <div class="info-key">{{ item.key }}</div>
       <div class="info-list">
         <img
+          v-for="(image, imageIndex) in item.list"
           :key="imageIndex"
-          v-lazy="image"
+          :src="image"
           @load="imgLoad"
           alt=""
-          v-for="(image, imageIndex) in item.list"
         />
       </div>
     </div>

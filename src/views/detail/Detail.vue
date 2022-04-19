@@ -47,6 +47,7 @@ export default {
       count:0,
       detailnavbarr:0,
       topImages:[],
+      shopservices:[],
       goods:{},
       shop:{},
       detailInfo:{},
@@ -83,24 +84,33 @@ export default {
       // console.log(res);
       const data = res.result;
       // 1.获取顶部的图片轮播数据
-      this.topImages = data.itemInfo.topImages
+      this.topImages = Array.from(Object.values(data.itemInfo.topImages),x=>"http:" +x);
 
       // 2.获取商品信息
-      this.goods = new GoodsInfo(data.itemInfo, data.columns, data.shopInfo.services)
+    this.shopservices =  data.shopInfo.services
+    for(let i in this.shopservices){
+      this.shopservices[i].icon = "http:" + this.shopservices[i].icon
+    }
+    this.goods = new GoodsInfo(data.itemInfo, data.columns, this.shopservices)
       
       // 3.创建店铺信息对象
       this.shop = new Shop(data.shopInfo)
-      // console.log(this.shop);
+      this.shop.logo = "http:" + this.shop.logo
 
       // 4.保存商品的详情数据
       this.detailInfo = data.detailInfo;
-
+      this.detailInfo.detailImage[0].list = Array.from(Object.values(data.detailInfo.detailImage[0].list),x=>"http:" +x);
+      console.log(this.detailInfo);
       // 5.获取商品参数信息
       this.paramInfo = new GoodsParam(data.itemParams.info, data.itemParams.rule)
-
+      if(this.paramInfo.image !== '') {
+        this.paramInfo.image = 'http:' + this.paramInfo.image 
+      }
+      
       // 6.取出评论信息 有些没有评论所以要判断一下
       if(data.rate.cRate !== 0){
         this.commentInfo = data.rate.list[0]
+        this.commentInfo.user.avatar = 'http:' + this.commentInfo.user.avatar
       }
 
       
